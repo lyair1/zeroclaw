@@ -11,6 +11,7 @@ use crate::security::SecurityPolicy;
 use crate::tools::{self, Tool};
 use crate::util::truncate_with_ellipsis;
 use anyhow::Result;
+use futures_util::future;
 use regex::{Regex, RegexSet};
 use std::fmt::Write;
 use std::io::Write as _;
@@ -1083,7 +1084,7 @@ async fn execute_tools_parallel(
         })
         .collect();
 
-    let results = futures::future::join_all(futures).await;
+    let results: Vec<Result<String>> = future::join_all(futures).await;
     results.into_iter().collect()
 }
 

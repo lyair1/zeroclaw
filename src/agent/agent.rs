@@ -11,6 +11,7 @@ use crate::runtime;
 use crate::security::SecurityPolicy;
 use crate::tools::{self, Tool, ToolSpec};
 use anyhow::Result;
+use futures_util::future;
 use std::io::Write as IoWrite;
 use std::sync::Arc;
 use std::time::Instant;
@@ -421,7 +422,7 @@ impl Agent {
             .iter()
             .map(|call| self.execute_tool_call(call))
             .collect();
-        futures::future::join_all(futs).await
+        future::join_all(futs).await
     }
 
     fn classify_model(&self, user_message: &str) -> String {
